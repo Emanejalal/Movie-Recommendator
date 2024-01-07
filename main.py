@@ -25,7 +25,7 @@ cosine_sim = cosine_similarity(tfidf_matrix)
 cosine_sim_df = pd.DataFrame(cosine_sim, index=movies['title'], columns=movies['title'])
 
 # Fonction de recommandation de genre
-def genre_recommendations(title, M, items, k=10):
+def genre_recommendations(title, M, items, k=14):
     if title not in M.index:
         return "Film non trouvé."
     ix = M.loc[:, title].to_numpy().argpartition(range(-1, -k, -1))

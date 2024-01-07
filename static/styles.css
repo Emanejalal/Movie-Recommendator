@@ -51,7 +51,7 @@ body {
   list-style: none; /* Remove default list styles */
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
-  margin-right: 320px;
+  margin-right: 500px;
 }
 /* Optional: Adjust styling for better visual appeal */
 .nav__link {
@@ -624,8 +624,8 @@ footer {
 }
 
 .about-us__content p {
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 2rem;
+  font-weight: 600;
   line-height: 1.5;
 }
 
