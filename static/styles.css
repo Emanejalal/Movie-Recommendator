@@ -701,7 +701,16 @@ footer {
   margin-bottom: 8px;
 }
 
+
 .movie-card__rating {
-  font-size: 14px;
-  color: #555;
+  font-weight: bold;
+}
+
+.movie-card__stars {
+  margin-top: 8px;
+}
+
+.star {
+  color: #FFD700; /* Set star color to gold, you can change it to your preference */
+  font-size: 20px;
 }
