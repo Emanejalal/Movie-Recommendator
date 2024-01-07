@@ -77,7 +77,7 @@ def get_movie_image_url(movie_name):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-     top_rated_movies = movies.sort_values(by='rating', ascending=False).head(5)
+     top_rated_movies = movies.sort_values(by='rating', ascending=False).head(4)
      print(top_rated_movies)
      return render_template('index.html', top_rated_movies=top_rated_movies)
 

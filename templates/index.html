@@ -132,20 +132,30 @@
           </div>
         </div>
         <!-- Feature 2 -->
-<div class="feature">
-  <h1 class="feature__title">Top 5 Movies with Ratings</h1>
+        <div class="feature">
   <div class="movie-cards">
     {% for index, row in top_rated_movies.iterrows() %}
-    <div class="movie-card">
-      <h3 class="movie-card__title">{{ row['title'] }}</h3>
-      <div class="movie-card__details">
-        <p class="movie-card__rating">Rating: {{ row['rating'] }}</p>
+      <div class="movie-card">
+        <img class="movie-card__image" src="https://th.bing.com/th/id/R.805fbe5d1f82c05ccd982fb37ec243d5?rik=jzE1UR2ah%2b8zpA&riu=http%3a%2f%2fimages2.fanpop.com%2fimages%2fphotos%2f8400000%2fMovie-Posters-movies-8405245-1224-1773.jpg&ehk=k87cjy7XpNwrPb49EzeBjqw44Wxff4qiNh8iim3NcRI%3d&risl=&pid=ImgRaw&r=0" alt="{{ row['title'] }} Image">
+        <div class="movie-card__details">
+          <h3 class="movie-card__title">{{ row['title'] }}</h3>
+          <div class="movie-card__rating">
+            Rating:<br>
+            {{ row['rating'] }}
+            {% for _ in range(row['rating']|int) %}
+              <span class="star">&#9733;</span>
+            {% endfor %}
+          </div>
+        </div>
       </div>
-    </div>
     {% endfor %}
   </div>
+  <h1 class="feature__title">Top 5 Movies with Ratings</h1>
 </div>
 
+        
+        
+        
         <!-- Feature 3 -->
         <div class="feature">
           <div class="feature__details">
