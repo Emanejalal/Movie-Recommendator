@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from bs4 import BeautifulSoup
 import requests
-
+import re
 app = Flask(__name__)
 
 # Charger les données
@@ -38,66 +38,74 @@ from bs4 import BeautifulSoup
 
 import requests
 from bs4 import BeautifulSoup
+######
+###
+def get_movie_poster_url(movie_title):
+    tmdb_api_key = 'd068096d3c09b740ead5107377ef29c9'
+    base_url = 'https://api.themoviedb.org/3/search/movie'
+    params = {'api_key': tmdb_api_key, 'query': movie_title}
 
-def get_movie_image_url(movie_name):
-    base_url = "https://www.imdb.com"
-    
-    # Search for the movie
-    search_url = f"{base_url}/find?q={movie_name}"
-    response = requests.get(search_url)
-    
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Modify this part based on the current HTML structure
-        result = soup.find("div", class_="result_item")  # Change class or element as needed
-        
-        if result:
-            movie_url = result.find('a')['href']
-            movie_page_url = f"{base_url}{movie_url}"
-            
-            # Access the movie page
-            movie_response = requests.get(movie_page_url)
-            
-            if movie_response.status_code == 200:
-                movie_soup = BeautifulSoup(movie_response.text, 'html.parser')
-                
-                # Modify this part based on the current HTML structure
-                image_tag = movie_soup.find("div", class_="ipc-media--poster-27x40")  # Change class or element as needed
-                
-                if image_tag:
-                    image_url = image_tag.find('img')['src']
-                    return 'https://m.media-amazon.com/images/M/MV5BMzBmOGQ0NWItOTZjZC00ZDAxLTgyOTEtODJiYWQ2YWNiYWVjXkEyXkFqcGdeQXVyNTE1NjY5Mg@@._V1_QL75_UX190_CR0,1,190,281_.jpg'
-    
+    response = requests.get(base_url, params=params)
+    data = response.json()
+
+    if 'results' in data and data['results']:
+        # Assuming the first result is the most relevant
+        poster_path = data['results'][0]['poster_path']
+        if poster_path:
+            return f'https://image.tmdb.org/t/p/w500/{poster_path}'
+
+    # If no valid poster URL is found, return None
     return None
 
+# Update your home route to include movie posters
+def clean_movie_title(title):
+    # Use regular expression to remove year in parentheses at the end of the title
+    cleaned_title = re.sub(r'\(\d{4}\)$', '', title.strip())
+    return cleaned_title
 
-
-
-
+# Update your home route to include movie posters
 @app.route('/', methods=['GET', 'POST'])
 def home():
-     top_rated_movies = movies.sort_values(by='rating', ascending=False).head(4)
-     print(top_rated_movies)
-     return render_template('index.html', top_rated_movies=top_rated_movies)
+    top_rated_movies = movies.sort_values(by='rating', ascending=False).head(4)
 
+    for index, row in top_rated_movies.iterrows():
+        movie_title = row['title']
+        cleaned_title = clean_movie_title(movie_title)
+        poster_url = get_movie_poster_url(cleaned_title)
 
+        if poster_url:
+            # Append the poster URL to the DataFrame
+            top_rated_movies.at[index, 'poster_url'] = poster_url
+        else:
+            # Set a default poster URL if not found
+            top_rated_movies.at[index, 'poster_url'] = 'https://th.bing.com/th/id/R.795cb58050fdc49e032b51a18b640ae8?rik=E7U1xE2qtjlH0A&riu=http%3a%2f%2fgraphicdesignjunction.com%2fwp-content%2fuploads%2f2012%2f05%2flarge%2fmovie-poster-15.jpg&ehk=qZXiHOmcMXCoiZRB%2b5xkS6g8P1gXlv7QP1H7BEu52lE%3d&risl=&pid=ImgRaw&r=0'
 
-
+    return render_template('index.html', top_rated_movies=top_rated_movies)
 
 
    
 
 @app.route('/recommendations', methods=['GET', 'POST'])
 def recommendations():
-       if request.method == 'POST':
-            movie_title = request.form['movie_title']
-            recommendations = genre_recommendations(movie_title, cosine_sim_df, movies[['title', 'genres']])
-            movie_image_url = get_movie_image_url("clueless")
-            print(recommendations)
+    if request.method == 'POST':
+        movie_title = request.form['movie_title']
+        recommendations = genre_recommendations(movie_title, cosine_sim_df, movies[['title', 'genres']])
+        ###################################################################################################
+        for index, row in recommendations.iterrows():
+            movie_title2 = row['title']
+            cleaned_title2 = clean_movie_title(movie_title2)
+            poster_url2 = get_movie_poster_url(cleaned_title2)
 
-            return render_template('recommendations.html', recommendations=recommendations, movie_title=movie_title, movie_image_url=movie_image_url)
-       return render_template('recommendations.html', recommendations=None)
+            if poster_url2:
+                # Append the poster URL to the DataFrame
+                recommendations.at[index, 'poster_url'] = poster_url2
+            else:
+                # Set a default poster URL if not found
+                recommendations.at[index, 'poster_url'] = 'https://th.bing.com/th/id/R.795cb58050fdc49e032b51a18b640ae8?rik=E7U1xE2qtjlH0A&riu=http%3a%2f%2fgraphicdesignjunction.com%2fwp-content%2fuploads%2f2012%2f05%2flarge%2fmovie-poster-15.jpg&ehk=qZXiHOmcMXCoiZRB%2b5xkS6g8P1gXlv7QP1H7BEu52lE%3d&risl=&pid=ImgRaw&r=0'
+        ##################################################################################################
+        return render_template('recommendations.html', recommendations=recommendations, movie_title2=movie_title2, poster_url2=poster_url2)
+    
+    return render_template('recommendations.html', recommendations=None)
 
 
 

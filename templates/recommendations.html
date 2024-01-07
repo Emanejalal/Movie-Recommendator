@@ -17,11 +17,11 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
-    <title>Netflix India - Watch TV Shows Online, Watch Movies Online</title>
+    <title>WatchHub - Movies Recommendator Online</title>
     <link
-      rel="icon"
-      href="http://pngimg.com/uploads/netflix/small/netflix_PNG15.png"
-    />
+          rel="icon"
+          href="/static/image1.png"
+        />
   </head>
   <body>
     <header>
@@ -102,24 +102,23 @@
       <section class="features__container">
         <!-- Feature 1 -->
         <div class="feature">
-        <div class="movie-cards">
-                  {% if recommendations is not none %}
-                      {% for index, row in recommendations.iterrows() %}
-                          <div class="movie-card">
-                            <h3 class="movie-card__title">{{ row['title'] }}</h3>
-
-                              <div class="film-details">
-                                  <p>Genres: {{ row['genres'] }}</p>
-                            
-                                    <img class="movie-card__image" src="https://th.bing.com/th/id/R.805fbe5d1f82c05ccd982fb37ec243d5?rik=jzE1UR2ah%2b8zpA&riu=http%3a%2f%2fimages2.fanpop.com%2fimages%2fphotos%2f8400000%2fMovie-Posters-movies-8405245-1224-1773.jpg&ehk=k87cjy7XpNwrPb49EzeBjqw44Wxff4qiNh8iim3NcRI%3d&risl=&pid=ImgRaw&r=0" alt="{{ row['title'] }} Image">
-                                
-                              </div>
+          <div class="movie-cards">
+              {% if recommendations is not none %}
+                  {% for index, row in recommendations.iterrows() %}
+                      <div class="movie-card">
+                          <h3 class="movie-card__title">{{ row['title'] }}</h3>
+                          <div class="film-details">
+                              <p>Genres: {{ row['genres'] }}</p>
+                              <img class="movie-card__image" src="{{ row['poster_url'] }}" alt="{{ row['title'] }} Image">
                           </div>
-                      {% endfor %}
-                  {% endif %}
-              </div>
-        </div>
-        <!-- Feature 2 -->
+                      </div>
+                  {% endfor %}
+              {% else %}
+                  <p>No recommendations available.</p>
+              {% endif %}
+          </div>
+      </div>
+      
         
 
       </section>
@@ -146,7 +145,6 @@
           <p>Account</p>
           <p>Ways to Watch</p>
           <p>Corporate Information</p>
-          <p>Only on Netflix</p>
         </div>
         <div class="column__4">
           <p>Media Centre</p>
@@ -168,7 +166,7 @@
         </div>
       </div>
       <div class="footer__row__4">
-        <p>Netflix India</p>
+        
       </div>
     </footer>
 
